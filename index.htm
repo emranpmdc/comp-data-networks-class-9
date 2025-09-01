@@ -1,0 +1,797 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSTs Paid Course by Imran Ustad - Computer Class 9: Computer Networking MCQs</title>
+    <!-- Use Tailwind CSS for modern, responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include html2canvas for capturing the result as a PNG -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        /* Define a custom font family for Georgia */
+        .font-georgia {
+            font-family: Georgia, serif;
+        }
+
+        /* Style for the custom modal box */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-50px);
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Button Gradient for Submit */
+        .submit-btn {
+            background-image: linear-gradient(to right, #10b981, #059669);
+            transition: all 0.3s ease;
+        }
+        .submit-btn:hover {
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+        }
+
+        /* Option Hover and Selected Effect with new dark green color and no zoom */
+        .quiz-option-label {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Change background on hover */
+        .quiz-option-label:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background-color: #059669; /* Dark green background */
+        }
+        
+        /* Change text color to white on hover */
+        .quiz-option-label:hover span {
+            color: #ffffff;
+        }
+        
+        /* Selected option styling */
+        .quiz-option-label.selected {
+            background-color: #059669; /* Dark green background */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Ensures text inside selected option is white */
+        .quiz-option-label.selected span {
+            color: #ffffff;
+        }
+        
+        /* Hide the default radio button while keeping it functional */
+        .quiz-option-label input[type="radio"] {
+            display: none;
+        }
+        
+        /* Adjust main layout to ensure all components fit on screen */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1; /* Allows the container to fill available space */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        /* On smaller screens, adjust padding to prevent content overflow */
+        @media (max-width: 640px) {
+            .quiz-content-wrapper {
+                padding: 1rem;
+            }
+        }
+        
+        /* No zoom effect on buttons */
+        .no-zoom:hover {
+            transform: none !important;
+        }
+        
+        /* Style for the temporary div used for image generation */
+        #download-result-container {
+            position: absolute;
+            top: -9999px; /* Hide off-screen */
+            left: -9999px;
+            width: 800px; /* A fixed width for consistent image output */
+            background-color: white;
+            padding: 2rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #download-result-container .header-clone,
+        #download-result-container .footer-clone {
+            text-align: center;
+            padding: 1rem;
+            background-color: #10b981;
+            color: white;
+        }
+        #download-result-container .results-clone {
+            padding: 2rem;
+            text-align: center;
+        }
+        #download-result-container .results-clone p,
+        #download-result-container .results-clone h2 {
+            text-align: center;
+        }
+        #download-result-container .results-clone .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+        #download-result-container .results-clone .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        /* New styling for the full quiz review section */
+        .quiz-review-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background-color: #fafafa;
+        }
+
+        .quiz-review-question {
+            font-weight: 700;
+            color: #FF0000; /* Bright red */
+            margin-bottom: 0.75rem;
+            font-size: 1.125rem; /* text-lg */
+        }
+
+        .quiz-review-option {
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quiz-review-option.correct {
+            background-color: #dcfce7; /* green-100 */
+            color: #065f46; /* green-800 */
+            font-weight: 600;
+        }
+        .quiz-review-option.incorrect {
+            background-color: #fee2e2; /* red-100 */
+            color: #991b1b; /* red-800 */
+        }
+        
+        /* --- FIX: Updated the media print query to correctly display the results container --- */
+        @media print {
+            /* Hide the main header and footer, as well as the button container */
+            .no-print,
+            #name-entry-container,
+            #quiz-content-wrapper {
+                display: none !important;
+            }
+            
+            /* Ensure the main container holding the results is fully visible and styled for printing */
+            .container {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: auto !important;
+                max-width: none !important;
+                height: auto !important;
+            }
+
+            /* Ensure the results container itself is visible and formatted for a clean printout */
+            #results-container {
+                display: block !important;
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                background-color: #ffffff !important;
+            }
+        }
+
+        /* Custom CSS for the video container to maintain a 16:9 aspect ratio */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 1rem;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Styling for the question number circle */
+        .question-number-circle {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 30px; /* Adjust size as needed */
+            height: 30px; /* Adjust size as needed */
+            border-radius: 50%;
+            background-color: #059669; /* Green color */
+            color: #ffffff; /* White text */
+            font-weight: bold;
+            margin-right: 10px;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-emerald-50 to-green-100 min-h-screen flex flex-col justify-between items-center">
+
+    <!-- Stylized Green Header Label with user info -->
+    <div id="header" class="no-print w-full bg-gradient-to-r from-green-700 to-emerald-600 text-white text-center py-5 text-4xl font-extrabold rounded-b-3xl">
+        <h1 class="text-4xl font-extrabold mb-1">SSTs Paid Course by Imran Ustad</h1>
+        <h2 class="text-3xl font-bold">Computer Class 9 Unit: Computer Networking</h2>
+        <h3 class="text-xl font-semibold mt-2">Topics: Introduction to Data Communication, Components of a Data Communication System, Data Transmission Modes, Transmission Media, Data Transmission Types</h3>
+        <p class="text-base">Test Complexity: Bachelor Level</p>
+        <p class="text-base mt-1">
+            <a href="https://www.youtube.com/@TheImranUstad" target="_blank" rel="noopener noreferrer" class="text-white hover:text-gray-200 transition-colors">
+                https://www.youtube.com/@TheImranUstad
+            </a>
+        </p>
+    </div>
+
+    <!-- Main quiz container with enhanced styling -->
+    <div class="container max-w-5xl mx-auto rounded-3xl shadow-2xl bg-white p-8 sm:p-12 my-8 flex-1 flex flex-col justify-center items-center">
+        
+        <!-- Name entry container (initial screen) -->
+        <div id="name-entry-container" class="w-full max-w-md text-center p-8 bg-gray-50 rounded-3xl shadow-inner border-t-4 border-green-500">
+            <h2 class="text-3xl font-extrabold text-green-700 mb-6">Welcome to the Quiz!</h2>
+            <p class="text-lg text-gray-700 mb-4">Please enter your name to begin.</p>
+            <input type="text" id="name-input" placeholder="Enter your name" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 mb-6 text-center text-lg">
+            <button id="start-btn" class="w-full text-white font-bold py-3.5 rounded-full shadow-lg transition-colors bg-blue-600 hover:bg-blue-700 no-zoom">
+                Start Quiz
+            </button>
+        </div>
+        
+        <!-- Quiz content wrapper (initially hidden) -->
+        <div id="quiz-content-wrapper" class="hidden w-full">
+            <!-- Controls and Timer section (Reversed for right alignment) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                <!-- This div is for navigation buttons (currently empty) -->
+                <div class="flex gap-4">
+                    <!-- Navigation buttons will be dynamically shown here -->
+                </div>
+                <!-- Timer is now on the right -->
+                <div class="flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-xl font-semibold text-gray-700">Time Left:</span>
+                    <span id="timer" class="text-3xl font-bold text-red-600 bg-red-100 px-5 py-2.5 rounded-xl shadow-inner">60:00</span>
+                </div>
+            </div>
+
+            <!-- Quiz questions container -->
+            <div id="quiz-form" class="space-y-4">
+                <!-- Questions and navigation buttons will be dynamically inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Results container (initially hidden) -->
+        <div id="results-container" class="hidden mt-8 p-8 bg-gray-50 rounded-3xl shadow-inner border-t-4 border-green-500 w-full">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-center mb-4 text-green-700">Quiz Results</h2>
+            <p class="text-lg mb-3 text-center">
+                <span id="user-name-result" class="font-extrabold text-green-600"></span>
+            </p>
+            <p class="text-lg mb-3">
+                Total Questions: <span id="total-questions" class="font-extrabold text-green-600"></span>
+            </p>
+            <p class="text-lg mb-6">
+                Obtained Marks: <span id="obtained-marks" class="font-extrabold text-green-600"></span>
+            </p>
+
+            <!-- Video Container - Moved to appear on the results page -->
+            <div class="w-full mx-auto my-8">
+                <div class="bg-white p-6 rounded-3xl shadow-2xl">
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-center mb-6 text-green-700">Preparation Guide: KPPSC SST Syllabus 2025</h3>
+                    <div class="video-container">
+                        <iframe width="695" height="391" src="https://www.youtube.com/embed/sFzdY39_Kw8" title="KPPSC SST Syllabus 2025 KPK | SST General, Maths-Physics, Bio-Chem | Past Papers &amp; Preparation Guide" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-o" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <div id="full-quiz-review" class="mt-8">
+                <h3 class="text-xl font-bold text-gray-700 mb-4">Quiz Review:</h3>
+                <!-- The full quiz review will be displayed here -->
+            </div>
+            
+            <!-- Button container for the new download button and the print button -->
+            <div class="no-print flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
+                <!-- Download button for results as PNG -->
+                <button id="download-btn" class="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-full shadow-md hover:bg-indigo-700 transition-colors no-zoom">
+                    Download Result Card (PNG)
+                </button>
+                <!-- Print Result button -->
+                <button id="print-btn" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-full shadow-md hover:bg-blue-700 transition-colors no-zoom">
+                    Print Result
+                </button>
+            </div>
+        </div>
+
+    <!-- Custom modal for validation/errors -->
+    <div id="validation-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <p id="modal-message" class="text-xl font-semibold mb-6 text-gray-800"></p>
+            <button id="modal-close-btn" class="bg-red-500 text-white font-bold py-2.5 px-6 rounded-full hover:bg-red-600 transition-colors no-zoom">
+                Close
+            </button>
+        </div>
+    </div>
+    
+    <!-- Updated Green Footer Label with enhanced styling -->
+    <footer id="footer" class="no-print w-full bg-gradient-to-r from-green-700 to-emerald-600 text-white text-center py-6 text-2xl font-semibold rounded-t-3xl">
+        <h3 class="text-2xl font-extrabold mb-1">By Imran Ustad</h3>
+        <p class="text-base mb-1">WhatsApp: 03345501369</p>
+        <p class="text-base">
+            <a href="https://www.youtube.com/@TheImranUstad" target="_blank" rel="noopener noreferrer" class="text-white hover:text-gray-200 transition-colors">
+                https://www.youtube.com/@TheImranUstad
+            </a>
+        </p>
+    </footer>
+
+    <script>
+        // Array of 60 MCQs for Computer Networking
+        const allQuestions = [
+            { question: "1. Which of the following is NOT a component of a data communication system?", options: ["Sender", "Message", "Application", "Protocol"], correct: 2 },
+            { question: "2. The primary function of a protocol in data communication is to:", options: ["Physically connect devices", "Manage power supply", "Establish rules for data exchange", "Convert digital to analog signals"], correct: 2 },
+            { question: "3. What is the term for the physical path over which a message travels?", options: ["Protocol", "Message", "Medium", "Sender"], correct: 2 },
+            { question: "4. A walkie-talkie operates in which data transmission mode?", options: ["Simplex", "Half-Duplex", "Full-Duplex", "Multiplex"], correct: 1 },
+            { question: "5. Which guided media is most susceptible to external electromagnetic interference (EMI)?", options: ["Fiber optic cable", "Coaxial cable", "Shielded twisted-pair (STP)", "Unshielded twisted-pair (UTP)"], correct: 3 },
+            { question: "6. A data signal that consists of discrete voltage levels, typically represented by 0s and 1s, is a:", options: ["Analog signal", "Digital signal", "Continuous signal", "Wave signal"], correct: 1 },
+            { question: "7. Which transmission mode is like a one-way street, where data can only flow from the sender to the receiver?", options: ["Simplex", "Half-Duplex", "Full-Duplex", "Multiplex"], correct: 0 },
+            { question: "8. The process of converting digital data to an analog signal is known as:", options: ["Demodulation", "Modulation", "Encoding", "Sampling"], correct: 1 },
+            { question: "9. Which unguided media uses the Earth's atmosphere as a medium for signal propagation?", options: ["Radio waves", "Infrared", "Satellite", "Fiber optics"], correct: 0 },
+            { question: "10. What is the primary function of a receiver in a communication system?", options: ["To send data", "To interpret data", "To encode data", "To choose the medium"], correct: 1 },
+            { question: "11. The twisting of wires in a UTP cable helps to reduce:", options: ["Signal loss", "Crosstalk", "Cable weight", "Physical damage"], correct: 1 },
+            { question: "12. What is the main characteristic of a Full-Duplex transmission mode?", options: ["Data flows in one direction only", "Data flows in both directions, but not simultaneously", "Data flows in both directions simultaneously", "Data is broadcast to all devices"], correct: 2 },
+            { question: "13. What is 'attenuation' in data communication?", options: ["The increase in signal strength", "The reduction in signal strength", "The speed of the signal", "The delay in signal transmission"], correct: 1 },
+            { question: "14. A device that performs both modulation and demodulation is a:", options: ["Router", "Switch", "Hub", "Modem"], correct: 3 },
+            { question: "15. Which of the following is an example of an unguided medium?", options: ["Ethernet cable", "Coaxial cable", "Radio waves", "Fiber optic cable"], correct: 2 },
+            { question: "16. In the context of data communication, what is the 'message'?", options: ["The physical device", "The information to be sent", "The path of the signal", "The set of rules"], correct: 1 },
+            { question: "17. What is the key advantage of a digital signal over an analog signal?", options: ["It requires more bandwidth", "It is more susceptible to noise", "It can be easily regenerated without distortion", "It is always faster"], correct: 2 },
+            { question: "18. Which guided media provides the highest bandwidth and is immune to EMI?", options: ["Twisted-pair", "Coaxial", "Fiber optic", "USB cable"], correct: 2 },
+            { question: "19. The delay in transmitting a signal from the Earth's surface to a geostationary satellite and back is known as:", options: ["Latency", "Propagation delay", "Attenuation", "Jitter"], correct: 1 },
+            { question: "20. What does 'Jitter' refer to in data communication?", options: ["The time it takes to send a packet", "The amount of data lost", "Variations in the packet arrival time", "The number of bits transmitted"], correct: 2 },
+            { question: "21. Which component of a coaxial cable provides insulation?", options: ["The central conductor", "The metallic shield", "The plastic jacket", "The insulating layer"], correct: 3 },
+            { question: "22. Which transmission mode is used for a television remote control?", options: ["Simplex", "Half-Duplex", "Full-Duplex", "Broadcast"], correct: 0 },
+            { question: "23. What is the main challenge of using microwave communication over long distances?", options: ["High cost", "Susceptibility to weather conditions", "It requires a physical medium", "Limited bandwidth"], correct: 1 },
+            { question: "24. A telephone call is an example of which transmission mode?", options: ["Simplex", "Half-Duplex", "Full-Duplex", "Triplex"], correct: 2 },
+            { question: "25. Which element is responsible for sending the data in a communication system?", options: ["Receiver", "Sender", "Medium", "Protocol"], correct: 1 },
+            { question: "26. What is the primary purpose of a codec?", options: ["To compress data", "To encrypt data", "To encode and decode signals", "To route data packets"], correct: 2 },
+            { question: "27. In which type of transmission are signals represented by continuous waves?", options: ["Analog", "Digital", "Discrete", "Modulated"], correct: 0 },
+            { question: "28. Why is 'Half-Duplex' mode used for walkie-talkies?", options: ["To prevent data collision", "To save battery power", "To allow both users to talk at once", "Because the technology is old"], correct: 0 },
+            { question: "29. Which of the following is NOT a Guided Transmission Media?", options: ["Twisted-pair", "Coaxial", "Fibre Optics", "Radio Waves"], correct: 3 },
+            { question: "30. A satellite in a geostationary orbit remains fixed relative to the Earth. This simplifies:", options: ["Ground station aiming", "Data transfer speed", "Satellite construction", "Bandwidth allocation"], correct: 0 },
+            { question: "31. The term 'Bandwidth' refers to:", options: ["The speed of the signal", "The range of frequencies available", "The number of connected devices", "The physical length of the medium"], correct: 1 },
+            { question: "32. What is 'cladding' in a fiber optic cable?", options: ["The protective outer layer", "A metallic shield", "A plastic layer that reflects light back into the core", "The central glass conductor"], correct: 2 },
+            { question: "33. Which transmission media type is best for secure, long-distance communication with minimal data loss?", options: ["Coaxial", "Twisted-pair", "Microwave", "Fiber Optic"], correct: 3 },
+            { question: "34. What is the process of converting an analog signal to a digital signal called?", options: ["Modulation", "Demodulation", "Quantization", "Encoding"], correct: 1 },
+            { question: "35. A voice signal from a microphone is an example of an:", options: ["Analog signal", "Digital signal", "Binary signal", "Discrete signal"], correct: 0 },
+            { question: "36. Which component of a coaxial cable helps to reduce electromagnetic interference?", options: ["The central conductor", "The insulating layer", "The outer metallic shield", "The outer jacket"], correct: 2 },
+            { question: "37. What is 'crosstalk' in twisted-pair cables?", options: ["Signal loss", "Interference between adjacent cables", "Signal reflection", "Noise from power lines"], correct: 1 },
+            { question: "38. Which of the following is a fundamental component of any data communication system?", options: ["Router", "Switch", "Hub", "Sender"], correct: 3 },
+            { question: "39. Which of the following is an example of a protocol?", options: ["Fiber optic cable", "Human voice", "TCP/IP", "Cell phone"], correct: 2 },
+            { question: "40. How is a message represented in a communication system?", options: ["As a physical device", "As information or data", "As a signal on the medium", "As a set of rules"], correct: 1 },
+            { question: "41. What is the role of a 'transceiver'?", options: ["Only sends data", "Only receives data", "Both sends and receives data", "Converts data from analog to digital"], correct: 2 },
+            { question: "42. Which transmission mode offers the highest efficiency for interactive communication?", options: ["Simplex", "Half-Duplex", "Full-Duplex", "Uniplex"], correct: 2 },
+            { question: "43. A line-of-sight communication system requires a direct, unobstructed path between:", options: ["The sender and the protocol", "The sender and the receiver", "The medium and the message", "The network and the internet"], correct: 1 },
+            { question: "44. What is the primary difference between terrestrial microwave and satellite microwave?", options: ["Terrestrial uses ground-based towers, satellite uses an orbiting relay", "Terrestrial is for broadcast, satellite is point-to-point", "Terrestrial is affected by weather, satellite is not", "Terrestrial is more expensive"], correct: 0 },
+            { question: "45. What is the main reason for the popularity of digital communication today?", options: ["It requires less power", "It is less expensive to transmit", "It is easier to regenerate signals without distortion", "It has higher bandwidth"], correct: 2 },
+            { question: "46. Which of the following is a characteristic of unguided media?", options: ["Requires a physical cable", "Signals are transmitted through the air", "Signals are confined to a specific path", "Less susceptible to interference"], correct: 1 },
+            { question: "47. Which guided media is generally considered the most secure against eavesdropping?", options: ["UTP", "STP", "Coaxial", "Fiber optic"], correct: 3 },
+            { question: "48. What does 'encoding' mean in data communication?", options: ["Converting a signal from one medium to another", "Converting a message into a form suitable for transmission", "Encrypting a message for security", "Compressing a message"], correct: 1 },
+            { question: "49. Which of the following is a key component of a data communication system that ensures communication is understood?", options: ["The medium", "The message", "The protocol", "The receiver"], correct: 2 },
+            { question: "50. What is 'sampling rate' when converting analog to digital?", options: ["The number of bits used to represent a sample", "The number of samples taken per second", "The frequency of the digital signal", "The number of digital pulses per second"], correct: 1 },
+            { question: "51. Which component of a data communication system provides the source of data to be transmitted?", options: ["Receiver", "Sender", "Message", "Medium"], correct: 1 },
+            { question: "52. What is a key benefit of digital communication over analog communication?", options: ["It requires less bandwidth", "It is more susceptible to noise", "It is easier to amplify without distortion", "It is more complex to implement"], correct: 2 },
+            { question: "53. What is the purpose of the outer metallic shield in a coaxial cable?", options: ["To prevent data loss", "To reduce signal attenuation", "To reduce electromagnetic interference", "To increase data speed"], correct: 2 },
+            { question: "54. An essential device for converting an analog signal to a digital signal for transmission over a digital network is a:", options: ["Modem", "Router", "Switch", "Hub"], correct: 0 },
+            { question: "55. Which of these is a guided transmission medium?", options: ["Infrared", "Microwave", "Fiber Optic", "Radio waves"], correct: 2 },
+            { question: "56. A system that can send data but not receive it is operating in what mode?", options: ["Simplex", "Half-Duplex", "Full-Duplex", "None of the above"], correct: 0 },
+            { question: "57. What is the main reason for the use of satellite communication?", options: ["Low cost", "Minimal latency", "Global coverage", "Resistance to physical damage"], correct: 2 },
+            { question: "58. In data communication, the term 'Timeliness' refers to:", options: ["The speed of data delivery", "The accuracy of the data", "The amount of data received", "The format of the data"], correct: 0 },
+            { question: "59. Which of the following is a type of analog transmission?", options: ["A telephone signal", "A text message", "A computer file", "A digital video stream"], correct: 0 },
+            { question: "60. The physical path over which a message travels from the sender to the receiver is the:", options: ["Protocol", "Message", "Medium", "Sender"], correct: 2 }
+        ];
+
+        let userAnswers = {};
+        let currentQuestionIndex = 0;
+        let timerSeconds = 60 * 60; // 60 minutes for 60 questions
+        let timerInterval;
+        let userName = '';
+
+        const nameEntryContainer = document.getElementById('name-entry-container');
+        const quizContentWrapper = document.getElementById('quiz-content-wrapper');
+        const nameInput = document.getElementById('name-input');
+        const startBtn = document.getElementById('start-btn');
+        const quizForm = document.getElementById('quiz-form');
+        const resultsContainer = document.getElementById('results-container');
+        const timerDisplay = document.getElementById('timer');
+        const modal = document.getElementById('validation-modal');
+        const modalMessage = document.getElementById('modal-message');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const printBtn = document.getElementById('print-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const userNameResult = document.getElementById('user-name-result');
+        const fullQuizReview = document.getElementById('full-quiz-review');
+
+        // Function to render a single question on the page
+        function renderQuestion(index) {
+            quizForm.innerHTML = ''; // Clear previous questions
+            const q = allQuestions[index];
+
+            const questionBox = document.createElement('div');
+            questionBox.className = 'bg-slate-100 p-6 rounded-2xl shadow-lg mb-6';
+            
+            const questionText = document.createElement('p');
+            // Changed color to bright red
+            questionText.className = 'text-lg sm:text-xl font-bold font-georgia text-[#FF0000] mb-4 flex items-center'; 
+            
+            const questionNumberSpan = document.createElement('span');
+            questionNumberSpan.className = 'question-number-circle';
+            questionNumberSpan.textContent = (index + 1);
+            questionText.appendChild(questionNumberSpan);
+            
+            const questionContentSpan = document.createElement('span');
+            // Remove any HTML tags from the question string before setting innerHTML
+            questionContentSpan.innerHTML = q.question.substring(q.question.indexOf('.') + 2).replace(/<\/?span[^>]*>/g, ""); 
+            questionText.appendChild(questionContentSpan);
+
+            questionBox.appendChild(questionText);
+
+            q.options.forEach((option, optionIndex) => {
+                const label = document.createElement('label');
+                label.className = 'quiz-option-label relative flex items-center p-4 mb-3 rounded-xl bg-white border border-gray-200 cursor-pointer transition-all duration-300 ease-in-out';
+                
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = `question-${index}`;
+                input.value = optionIndex;
+                
+                const optionSpan = document.createElement('span');
+                optionSpan.className = 'ml-3 text-base sm:text-lg text-gray-800 font-medium';
+                // Ensure options are plain text
+                optionSpan.innerHTML = option; 
+                
+                label.appendChild(input);
+                label.appendChild(optionSpan);
+                questionBox.appendChild(label);
+            });
+
+            // Add navigation buttons to the question box
+            const navButtonsDiv = document.createElement('div');
+            navButtonsDiv.className = 'flex justify-between mt-6 space-x-4';
+            
+            // Previous Button
+            const prevBtn = document.createElement('button');
+            prevBtn.id = 'prev-btn';
+            prevBtn.textContent = 'Previous';
+            prevBtn.className = 'w-full text-white font-bold py-3.5 rounded-full shadow-lg transition-colors bg-gray-500 hover:bg-gray-600 no-zoom';
+            prevBtn.addEventListener('click', previousQuestion);
+
+            // Hide the previous button on the first question
+            if (currentQuestionIndex === 0) {
+                prevBtn.classList.add('hidden');
+            }
+
+            // Next/Submit Button
+            let nextBtn;
+            if (currentQuestionIndex === allQuestions.length - 1) {
+                nextBtn = document.createElement('button');
+                nextBtn.id = 'submit-btn';
+                nextBtn.textContent = 'Submit Quiz';
+                nextBtn.className = 'w-full text-white font-bold py-3.5 rounded-full shadow-lg transition-colors submit-btn no-zoom';
+                nextBtn.addEventListener('click', submitQuiz);
+            } else {
+                nextBtn = document.createElement('button');
+                nextBtn.id = 'next-btn';
+                nextBtn.textContent = 'Next';
+                nextBtn.className = 'w-full text-white font-bold py-3.5 rounded-full shadow-lg transition-colors bg-blue-600 hover:bg-blue-700 no-zoom';
+                nextBtn.addEventListener('click', nextQuestion);
+            }
+            
+            navButtonsDiv.appendChild(prevBtn);
+            navButtonsDiv.appendChild(nextBtn);
+            questionBox.appendChild(navButtonsDiv);
+            
+            quizForm.appendChild(questionBox);
+            
+            // Highlight the previously selected answer if it exists
+            if (userAnswers[index] !== undefined) {
+                const selectedLabel = quizForm.querySelector(`input[name="question-${index}"][value="${userAnswers[index]}"]`).closest('label');
+                if (selectedLabel) {
+                    selectedLabel.classList.add('selected');
+                    selectedLabel.querySelector('input').checked = true; // Set the radio button as checked
+                }
+            }
+
+            // Add event listeners for new radio buttons
+            const radioButtons = quizForm.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', (event) => {
+                    const parentLabel = event.target.closest('label');
+                    const questionBox = parentLabel.closest('div');
+                    
+                    // Remove 'selected' class from all other labels in the same question
+                    questionBox.querySelectorAll('label').forEach(label => {
+                        label.classList.remove('selected');
+                    });
+                    
+                    // Add 'selected' class to the currently chosen label
+                    parentLabel.classList.add('selected');
+                });
+            });
+        }
+        
+        // Function to start the countdown timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                const minutes = Math.floor(timerSeconds / 60);
+                const seconds = timerSeconds % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.textContent = "Time's up!";
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        // Function to show the custom validation modal
+        function showModal(message) {
+            modalMessage.textContent = message;
+            modal.classList.add('active');
+            modal.classList.remove('hidden');
+        }
+
+        // Function to move to the next question
+        function nextQuestion() {
+            const selected = document.querySelector(`input[name="question-${currentQuestionIndex}"]:checked`);
+            if (!selected) {
+                showModal("Please select an option before moving to the next question.");
+                return;
+            }
+            userAnswers[currentQuestionIndex] = parseInt(selected.value);
+            
+            currentQuestionIndex++;
+            if (currentQuestionIndex < allQuestions.length) {
+                renderQuestion(currentQuestionIndex);
+            }
+        }
+        
+        // Function to move to the previous question
+        function previousQuestion() {
+            // Save the current answer before moving back
+            const selected = document.querySelector(`input[name="question-${currentQuestionIndex}"]:checked`);
+            if (selected) {
+                userAnswers[currentQuestionIndex] = parseInt(selected.value);
+            }
+            
+            currentQuestionIndex--;
+            if (currentQuestionIndex >= 0) {
+                renderQuestion(currentQuestionIndex);
+            }
+        }
+        
+        // New function to start the quiz after name entry
+        function startQuiz() {
+            const name = nameInput.value.trim();
+            if (!name) {
+                showModal("Please enter your name to start the quiz.");
+                return;
+            }
+            userName = name;
+            nameEntryContainer.classList.add('hidden');
+            quizContentWrapper.classList.remove('hidden');
+            renderQuestion(currentQuestionIndex);
+            startTimer();
+        }
+
+        // Function to render the full quiz results with correct and incorrect answers highlighted
+        function renderFullResults() {
+            fullQuizReview.innerHTML = ''; // Clear previous review
+            
+            allQuestions.forEach((q, index) => {
+                const questionReviewItem = document.createElement('div');
+                questionReviewItem.className = 'quiz-review-item';
+                
+                const questionText = document.createElement('p');
+                questionText.className = 'quiz-review-question';
+                // Ensure the question content is correctly displayed, including any red highlighting
+                questionText.innerHTML = `<span class="question-number-circle">${index + 1}</span> ${q.question.substring(q.question.indexOf('.') + 2)}`;
+                questionReviewItem.appendChild(questionText);
+
+                q.options.forEach((option, optionIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'quiz-review-option';
+                    
+                    const isCorrect = optionIndex === q.correct;
+                    const isUserAnswer = userAnswers[index] === optionIndex;
+
+                    // Apply green for correct answer
+                    if (isCorrect) {
+                        optionDiv.classList.add('correct');
+                        optionDiv.innerHTML = `✅ ${option}`;
+                    } 
+                    // Apply red for incorrect user answer
+                    else if (isUserAnswer) {
+                        optionDiv.classList.add('incorrect');
+                        optionDiv.innerHTML = `❌ ${option}`;
+                    }
+                    // Default styling for other options
+                    else {
+                        optionDiv.innerHTML = `${String.fromCharCode(65 + optionIndex)}. ${option}`;
+                    }
+                    
+                    questionReviewItem.appendChild(optionDiv);
+                });
+                
+                fullQuizReview.appendChild(questionReviewItem);
+            });
+        }
+
+        // Function to submit the quiz and display results
+        function submitQuiz() {
+            clearInterval(timerInterval); // Stop the timer
+            
+            // Check if the final question is answered
+            const selected = document.querySelector(`input[name="question-${currentQuestionIndex}"]:checked`);
+            if (!selected) {
+                showModal("Please select an option before submitting.");
+                return;
+            }
+            userAnswers[currentQuestionIndex] = parseInt(selected.value);
+
+            // Disable all radio buttons and buttons after submission
+            const allRadios = quizForm.querySelectorAll('input[type="radio"]');
+            allRadios.forEach(radio => radio.disabled = true);
+
+            let score = 0;
+            allQuestions.forEach((q, index) => {
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                }
+            });
+
+            // Display results
+            userNameResult.textContent = `Quiz Taker: ${userName}`;
+            document.getElementById('total-questions').textContent = allQuestions.length;
+            document.getElementById('obtained-marks').textContent = score;
+            
+            // Render the full quiz review
+            renderFullResults();
+
+            // Hide quiz, show results container
+            quizContentWrapper.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show the name entry screen by default
+            nameEntryContainer.classList.remove('hidden');
+        });
+        
+        startBtn.addEventListener('click', startQuiz);
+        
+        modalCloseBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('active');
+        });
+        
+        // Event listener for the "Print Result" button
+        printBtn.addEventListener('click', () => {
+            window.print();
+        });
+        
+        // Event listener for the "Download Result Card" button
+        downloadBtn.addEventListener('click', () => {
+            const headerContent = document.getElementById('header').innerHTML;
+            const footerContent = document.getElementById('footer').innerHTML;
+            const userName = document.getElementById('user-name-result').textContent;
+            const totalQuestions = document.getElementById('total-questions').textContent;
+            const obtainedMarks = document.getElementById('obtained-marks').textContent;
+
+            // Create a temporary, hidden container for the image generation
+            const tempContainer = document.createElement('div');
+            tempContainer.id = 'download-result-container';
+            document.body.appendChild(tempContainer);
+
+            // Get current date and time
+            const now = new Date();
+            const dateStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+            
+            // Build the simplified content for the image
+            tempContainer.innerHTML = `
+                <div class="header-clone">
+                    <h1 class="text-4xl font-extrabold mb-1">SSTs Paid Course by Imran Ustad</h1>
+                    <h2 class="text-3xl font-bold">Computer Class 9 Unit: Computer Networking</h2>
+                    <h3 class="text-xl font-semibold mt-2">Topics: Introduction to Data Communication, Components of a Data Communication System, Data Transmission Modes, Transmission Media, Data Transmission Types</h3>
+                    <p class="text-base">Test Complexity: Bachelor Level</p>
+                    <p class="text-base mt-1">
+                        <a href="https://www.youtube.com/@TheImranUstad" target="_blank" rel="noopener noreferrer" class="text-white hover:text-gray-200 transition-colors">
+                            https://www.youtube.com/@TheImranUstad
+                        </a>
+                    </p>
+                </div>
+                <div class="results-clone">
+                    <h2 class="text-3xl font-extrabold text-center mb-4 text-green-700">Computer Networking Class 9 MCQs</h2>
+                    <p class="text-lg mb-1 text-center font-bold text-gray-700">By SSTs Paid Course by Imran Ustad</p>
+                    <p class="text-lg mb-3 text-center font-extrabold text-green-600">${userName}</p>
+                    <p class="text-lg text-gray-700 mt-4 text-center">Date: ${dateStr} - Time: ${timeStr}</p>
+                    <p class="text-lg mb-3 text-center">
+                        Total Questions: <span class="font-extrabold text-green-600">${totalQuestions}</span>
+                    </p>
+                    <p class="text-lg mb-6 text-center">
+                        Obtained Marks: <span class="font-extrabold text-green-600">${obtainedMarks}</span>
+                    </p>
+                </div>
+                <div class="footer-clone">
+                    <h3 class="text-2xl font-extrabold mb-1">By Imran Ustad</h3>
+                    <p class="text-base mb-1">WhatsApp: 03345501369</p>
+                    <p class="text-base">
+                        <a href="https://www.youtube.com/@TheImranUstad" target="_blank" rel="noopener noreferrer" class="text-white hover:text-gray-200 transition-colors">
+                            https://www.youtube.com/@TheImranUstad
+                        </a>
+                    </p>
+                </div>
+            `;
+            
+            // Use html2canvas to capture the content of the temporary container
+            html2canvas(tempContainer, {
+                scale: 2, // Increase scale for a higher-quality image
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const image = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = image;
+                link.download = 'Computer_Networking_Quiz_Result_Card.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }).finally(() => {
+                // Clean up the temporary container
+                document.body.removeChild(tempContainer);
+            });
+        });
+    </script>
+</body>
+</html>
